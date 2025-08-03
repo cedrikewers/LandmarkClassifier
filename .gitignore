@@ -2,4 +2,3 @@ __pycache__
 .venv
 models
 label_samples
-*.gz
