@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Classification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+    <form action="/classify" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image">
+        <br>
+        <label for="model" style="margin-left: 5px;">Model:</label>
+        <select name="model" style="margin-top: 10px;">
+            {% for model in models%}
+                <option value="{{model}}" {% if model == "efficientnet-b0-v3" %}selected{% endif %}>{{model}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <button type="submit" style="margin-top: 10px;">classify</button>
+    </form>
+</body>
+</html>
