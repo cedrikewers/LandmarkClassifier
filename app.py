@@ -20,15 +20,16 @@ import matplotlib
 from werkzeug.datastructures import FileStorage
 
 markdown = mistune.create_markdown(plugins=['table'])
-base_path = "C:\\Users\\cedri\\Desktop\\tst\\"
+
+base_url_path = ""
 
 type TransformFunction = Callable[[Image.Image], torch.Tensor]
 
 N_CLASSES = 10_000
 
-name_mapping = pd.read_csv(base_path + "train_label_to_hierarchical.csv")
+name_mapping = pd.read_csv("train_label_to_hierarchical.csv")
 
-with open(base_path + "geolocations.json") as f:
+with open("geolocations.json") as f:
     geolocations = json.loads(f.read())
 
 model_file_from_name = {
@@ -50,7 +51,7 @@ def load_model(file_name: str) -> tuple[EfficientNet | ResNet | MobileNetV3, Tra
         model_type = "MobileNet_V3_Small"
     
     
-    file_name = f"{base_path}models/{file_name}"
+    file_name = f"models/{file_name}"
     if model_type == "efficientnet-b0":
         weights = EfficientNet_B0_Weights.DEFAULT
         model = efficientnet_b0()
@@ -95,9 +96,9 @@ def get_landmark_name(landmark_id: int) -> str | None:
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route(f"{base_url_path}/")
 def index():
-    return render_template("index.jinja", models=model_file_from_name.keys())
+    return render_template("index.jinja", models=model_file_from_name.keys(), base_url_path=base_url_path)
     
 @dataclass
 class PredictionResult:
@@ -108,7 +109,7 @@ class PredictionResult:
     def __repr__(self) -> str:
         out = "| Landmark ID | Prob | Landmark Name |\n|------------:|----:|-------------:|\n"
         for landmark_id, prob, landmark_name in zip(self.landmark_ids, self.probabilities, self.landmark_names):
-            landmark_id = f"[{landmark_id}](/label_sample/{landmark_id}/)"
+            landmark_id = f"[{landmark_id}]({base_url_path}/label_sample/{landmark_id}/)"
             out += f"|{landmark_id: >5}|{prob: >5.2%}|{landmark_name}|\n"
         return out
     
@@ -170,7 +171,7 @@ def get_geolocation_image(pr: PredictionResult) -> str:
 
     return f'<br style="margin-bottom:10px"><img src="data:image/png;base64,{img_base64}"/>'
 
-@app.route("/classify", methods=["POST"])
+@app.route(f"{base_url_path}/classify", methods=["POST"])
 def classify_rotue():
     img = request.files["image"]
     model_name = request.form["model"]
@@ -188,10 +189,10 @@ def classify_rotue():
     html += geolocations_image
     return render_template("results.jinja", html=html)
 
-@app.route("/label_sample/<landmark_id>/")
+@app.route(f"{base_url_path}/label_sample/<landmark_id>/")
 def get_label_sample_img(landmark_id):
     try:
-        return send_file(os.path.join(base_path, "label_samples", f"{landmark_id}.jpg"))
+        return send_file(os.path.join("label_samples", f"{landmark_id}.jpg"))
     except Exception as e:
         return str(e), 404
 

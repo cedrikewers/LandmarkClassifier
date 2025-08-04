@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
-    <form action="/classify" method="POST" enctype="multipart/form-data">
+    <form action="{{base_url_path}}/classify" method="POST" enctype="multipart/form-data">
         <input type="file" name="image">
         <br>
         <label for="model" style="margin-left: 5px;">Model:</label>
         <select name="model" style="margin-top: 10px;">
             {% for model in models%}
-                <option value="{{model}}" {% if model == "efficientnet-b0-v3" %}selected{% endif %}>{{model}}</option>
+                <option value="{{model}}" {% if model == "efficientnet-b0-v4" %}selected{% endif %}>{{model}}</option>
             {% endfor %}
         </select>
         <br>
