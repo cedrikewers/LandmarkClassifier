@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, send_file
 import torch
 import pandas as pd
 from PIL import Image
-from torchvision.models import efficientnet_b0, EfficientNet_B0_Weights, EfficientNet, ResNet, resnet50, ResNet50_Weights, MobileNet_V3_Small_Weights, mobilenet_v3_small
+from torchvision.models import efficientnet_b0, EfficientNet_B0_Weights, EfficientNet, ResNet, resnet50, ResNet50_Weights, MobileNet_V3_Small_Weights, MobileNetV3, mobilenet_v3_small
 import torch.nn as nn
 import torch.nn.functional as F
 from dataclasses import dataclass, field
@@ -17,11 +17,12 @@ from mpl_toolkits.basemap import Basemap
 import json
 import matplotlib.pyplot as plt
 import matplotlib
+from werkzeug.datastructures import FileStorage
 
 markdown = mistune.create_markdown(plugins=['table'])
 base_path = "C:\\Users\\cedri\\Desktop\\tst\\"
 
-type TransfromFunction = Callable[[Image.Image], torch.Tensor]
+type TransformFunction = Callable[[Image.Image], torch.Tensor]
 
 N_CLASSES = 10_000
 
@@ -40,7 +41,7 @@ model_file_from_name = {
     "MobileNet_V3_Small-v2": "MobileNet_V3_Small-10_000v2.pth",
 }
 
-def load_model(file_name: str) -> tuple[EfficientNet | ResNet, TransfromFunction]:
+def load_model(file_name: str) -> tuple[EfficientNet | ResNet | MobileNetV3, TransformFunction]:
     
     model_type: Literal["efficientnet-b0", "ResNet50", "MobileNet_V3_Small"] = "efficientnet-b0"
     if "ResNet50" in file_name:
@@ -112,7 +113,7 @@ class PredictionResult:
         return out
     
     
-def classify(img: Image.Image, model: ResNet | EfficientNet, transform: TransfromFunction) -> PredictionResult:
+def classify(img: FileStorage, model: ResNet | EfficientNet | MobileNetV3, transform: TransformFunction) -> PredictionResult:
     with torch.no_grad():
         image = Image.open(img).convert("RGB")
         image = transform(image)
