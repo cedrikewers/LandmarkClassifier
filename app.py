@@ -31,12 +31,12 @@ with open(base_path + "geolocations.json") as f:
     geolocations = json.loads(f.read())
 
 model_file_from_name = {
-    "efficientnet-b0-v2": "b0-10_000v2.pth",
+    # "efficientnet-b0-v2": "b0-10_000v2.pth",
     "efficientnet-b0-v3": "b0-10_000v3.pth",
     "efficientnet-b0-v4": "b0-10_000v4.pth",
-    "ResNet50-v1": "ResNet50-10_000v1.pth",
+    # "ResNet50-v1": "ResNet50-10_000v1.pth",
     "ResNet50-v2": "ResNet50-10_000v2.pth",
-    "MobileNet_V3_Small-v1": "MobileNet_V3_Small-10_000v1.pth",
+    # "MobileNet_V3_Small-v1": "MobileNet_V3_Small-10_000v1.pth",
     "MobileNet_V3_Small-v2": "MobileNet_V3_Small-10_000v2.pth",
 }
 
