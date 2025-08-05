@@ -185,6 +185,8 @@ def classify_rotue():
     geolocations_image = get_geolocation_image(res)
     
     html = markdown(repr(res))
+    if not isinstance(html, str):
+        return "Error in rendering markdown", 500
     html += base64image
     html += geolocations_image
     return render_template("results.jinja", html=html)
