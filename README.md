@@ -18,3 +18,4 @@ tar -xzf models.tar.gz -C models && tar -xzf label_samples.tar.gz -C label_sampl
 ```
 
 If you have this behind a reverse proxy, you can change the `base_url_path` variable in `app.py` to the path you want to use. For example, if you want to access the app at `https://example.com/landmark`, set `base_url_path = "/landmark"`.
+You can also set the `BASE_URL_PATH` environment variable to the same value, which will be used by the app.

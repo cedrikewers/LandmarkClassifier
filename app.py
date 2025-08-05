@@ -18,10 +18,14 @@ import json
 import matplotlib.pyplot as plt
 import matplotlib
 from werkzeug.datastructures import FileStorage
+import os
 
 markdown = mistune.create_markdown(plugins=['table'])
 
 base_url_path = ""
+
+if "BASE_URL_PATH" in os.environ and not base_url_path:
+    base_url_path = os.environ["BASE_URL_PATH"]
 
 type TransformFunction = Callable[[Image.Image], torch.Tensor]
 
