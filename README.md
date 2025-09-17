@@ -17,8 +17,35 @@ mkdir models label_samples
 tar -xzf models.tar.gz -C models && tar -xzf label_samples.tar.gz -C label_samples
 ```
 
-If you have this behind a reverse proxy, you can change the `base_url_path` variable in `app.py` to the path you want to use. For example, if you want to access the app at `https://example.com/landmark`, set `base_url_path = "/landmark"`.
-You can also set the `BASE_URL_PATH` environment variable to the same value, which will be used by the app.
+## Reverse Proxy Configuration
+
+If you deploy this app behind a reverse proxy (nginx, Apache, cloud load balancer, etc.), the app is configured to work correctly with standard reverse proxy headers.
+
+**Environment Variable:**
+Set the `BASE_URL_PATH` environment variable to match your proxy configuration:
+```bash
+export BASE_URL_PATH="/landmark"
+```
+
+**Reverse Proxy Headers:**
+The app automatically handles these standard reverse proxy headers:
+- `X-Forwarded-For`: Client IP address
+- `X-Forwarded-Proto`: Original protocol (http/https)  
+- `X-Forwarded-Host`: Original domain name
+- `X-Forwarded-Prefix`: URL prefix
+
+**Example nginx configuration:**
+```nginx
+location /landmark/ {
+    proxy_pass http://localhost:5025/landmark/;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Prefix /landmark;
+}
+```
+
+This ensures that URLs and redirects use the correct external domain instead of localhost.
 
 # Run using Docker
 
