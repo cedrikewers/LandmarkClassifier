@@ -100,15 +100,7 @@ def get_landmark_name(landmark_id: int) -> str | None:
 
 app = Flask(__name__)
 
-# Configure ProxyFix to handle reverse proxy headers correctly
-# This fixes the issue where Flask generates localhost URLs when behind a reverse proxy
-app.wsgi_app = ProxyFix(
-    app.wsgi_app, 
-    x_for=1,     # Trust 1 proxy for X-Forwarded-For
-    x_proto=1,   # Trust 1 proxy for X-Forwarded-Proto (http/https)
-    x_host=1,    # Trust 1 proxy for X-Forwarded-Host
-    x_prefix=1   # Trust 1 proxy for X-Forwarded-Prefix
-)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 
 @app.route(f"{base_url_path}/")
