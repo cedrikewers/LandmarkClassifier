@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, send_file
+from werkzeug.middleware.proxy_fix import ProxyFix
 import torch
 import pandas as pd
 from PIL import Image
@@ -98,6 +99,8 @@ def get_landmark_name(landmark_id: int) -> str | None:
 
 
 app = Flask(__name__)
+
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 
 @app.route(f"{base_url_path}/")
